@@ -2,9 +2,9 @@
 
 const url = 'https://testeleonid.herokuapp.com/clientes'
 
-const readCustomers = async () => {
+const readCustomers = async (id='') => {
     //Ler a API - A variável response -> resposta do servidor
-    const response = await fetch(url)
+    const response = await fetch(`${url}/${id}`)
     return await response.json()
 } 
 
@@ -30,4 +30,16 @@ const deleteCustomer = async (codigo) => {
     const response = await fetch(`${url}/${codigo}`, options)
 }
 
-export {readCustomers, createCustomers, deleteCustomer}
+const updateCustomer = async (customer) => {
+    const options = {
+        'method': 'PUT',
+        'body': JSON.stringify(customer),
+        'headers': {
+            'content-type': 'application/json'
+        }
+    }
+    const response = await fetch(`${url}/${customer.id}`, options)
+    console.log('UPDATE', response.ok)
+}
+
+export {readCustomers, createCustomers, deleteCustomer, updateCustomer}

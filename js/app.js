@@ -1,18 +1,18 @@
 'use strict'
 
 import {openModal, closeModal} from './modal.js'
-import {readCustomers, createCustomers, deleteCustomer} from './customers.js'
+import {readCustomers, createCustomers, deleteCustomer, updateCustomer} from './customers.js'
 
-const createRow = (customer) => {
+const createRow = ({nome, email, celular, cidade, id}) => {
     const row = document.createElement('tr')
     row.innerHTML = `
-        <td>${customer.nome}</td>
-        <td>${customer.email}</td>
-        <td>${customer.celular}</td>
-        <td>${customer.cidade}</td>
+        <td>${nome}</td>
+        <td>${email}</td>
+        <td>${celular}</td>
+        <td>${cidade}</td>
         <td>
-            <button type="button" class="button green" id="editar-${customer.id}">editar</button>
-            <button type="button" class="button red" id="excluir-${customer.id}">excluir</button>
+            <button type="button" class="button green" onClick="editCustomer(${id})">editar</button>
+            <button type="button" class="button red" onClick="delCustomer(${id})">excluir</button>
         </td>
     `
     return row
@@ -30,6 +30,8 @@ const updateTable = async () => {
     customersContainer.replaceChildren(...rows)
 }
 
+const isEdit = () => document.getElementById('nome').hasAttribute('data-id')
+
 const saveCustomer = async () => {
     //Cria um json com as informações do cliente
     const customer = {
@@ -40,13 +42,41 @@ const saveCustomer = async () => {
         "cidade": document.getElementById("cidade").value
     }
 
-    //Envia o json para o Servidor API
-    await createCustomers(customer)
-
-    //Fechar modal
+    if(isEdit()) {
+        customer.id = document.getElementById('nome').dataset.id
+        await updateCustomer(customer)
+    } else {
+        await createCustomers(customer)
+    }
+    
     closeModal()
 
-    //Atualizar 
+    updateTable()
+}
+
+const fillForm = (customer) => {
+    document.getElementById('nome').value = customer.nome
+    document.getElementById('email').value = customer.email
+    document.getElementById('celular').value = customer.celular
+    document.getElementById('cidade').value = customer.cidade
+    document.getElementById('nome').dataset.id = customer.id
+    /*setAttribute -> É mais geral
+    document.getElementById('nome').setAttribute('data-id', customer.id)*/
+}
+
+globalThis.editCustomer = async (id) => {
+    //Armazenar as informações do cliente em um avariável
+    const customer = await readCustomers(id)
+
+    //Preencher o formulário com as informações
+    fillForm(customer)
+
+    //Abrir a modal no estado de edição
+    openModal()
+}
+
+globalThis.delCustomer = async (id) => {
+    await deleteCustomer(id)
     updateTable()
 }
 
