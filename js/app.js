@@ -33,25 +33,31 @@ const updateTable = async () => {
 const isEdit = () => document.getElementById('nome').hasAttribute('data-id')
 
 const saveCustomer = async () => {
+
+    const form = document.getElementById('modal-form')
+
     //Cria um json com as informações do cliente
     const customer = {
-        "id": "",
+        // "id": "",
         "nome": document.getElementById("nome").value,
         "email": document.getElementById("email").value,
         "celular": document.getElementById("celular").value,
-        "cidade": document.getElementById("cidade").value
+        "cidade": document.getElementById("cidade").value,
+        "foto": document.getElementById("modal-image").src
     }
 
-    if(isEdit()) {
-        customer.id = document.getElementById('nome').dataset.id
-        await updateCustomer(customer)
-    } else {
-        await createCustomers(customer)
-    }
-    
-    closeModal()
+    if(form.reportValidity()) {
+        if(isEdit()) {
+            customer.id = document.getElementById('nome').dataset.id
+            await updateCustomer(customer)
+        } else {
+            await createCustomers(customer)
+        }
 
-    updateTable()
+        closeModal()
+
+        updateTable()
+    }
 }
 
 const fillForm = (customer) => {
@@ -60,6 +66,7 @@ const fillForm = (customer) => {
     document.getElementById('celular').value = customer.celular
     document.getElementById('cidade').value = customer.cidade
     document.getElementById('nome').dataset.id = customer.id
+    document.getElementById('modal-image').src = customer.foto
     /*setAttribute -> É mais geral
     document.getElementById('nome').setAttribute('data-id', customer.id)*/
 }
@@ -94,9 +101,22 @@ const actionCustomer = async () => {
     }
 }
 
+const maskCelular = ({target}) => {
+
+    let text = target.value
+
+    text = text.replace(/[^0-9]/g, '')
+    text = text.replace(/(.{2})(.{5})(.{4})/, '($1) $2-$3')
+    text = text.replace(/(.{15})(.*)/, '$1')
+    // text = text.replace(/(.{7})(.)/, '$1-$2')
+
+    target.value = text
+}
+
 updateTable()
 
 //Eventos
 document.getElementById('cadastrarCliente').addEventListener('click', openModal)
 document.getElementById('salvar').addEventListener('click', saveCustomer)
 document.getElementById('customers-container').addEventListener('click', actionCustomer)
+document.getElementById('celular').addEventListener('input', maskCelular)

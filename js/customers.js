@@ -20,7 +20,7 @@ const createCustomers = async(customer) => {
     }
 
     const response = await fetch(url, options)
-    console.log(response.ok)
+    console.log('CREATE', response.ok)
 }
 
 const deleteCustomer = async (codigo) => {

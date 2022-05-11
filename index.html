@@ -40,10 +40,17 @@
                     <span class="modal-close" id="modalClose">&#10006;</span>
                 </header>
                 <form class="modal-form" id="modal-form">
-                    <input type="text" class="modal-field" placeholder="Nome do Cliente" id="nome">
-                    <input type="email" class="modal-field" placeholder="e-mail do Cliente" id="email">
-                    <input type="text" class="modal-field" placeholder="Celular do Cliente" id="celular">
-                    <input type="text" class="modal-field" placeholder="Cidade do Cliente" id="cidade">
+                    <div class="modal-image-container">
+                        <input type="file" id="modal-image-input">
+                        <label for="modal-image-input" id="modal-image-label"></label>
+                        <img src="./img/add.png" alt="Foto do cliente" id="modal-image">
+                    </div>
+                    <div class="modal-field-container">
+                        <input type="text" class="modal-field" placeholder="Nome do Cliente" id="nome" required>
+                        <input type="email" class="modal-field" placeholder="e-mail do Cliente" id="email" pattern=".+@.+\..+" required>
+                        <input type="text" class="modal-field" placeholder="Celular do Cliente" id="celular" pattern="^\(?[0-9]{2}\)? ?[0-9]{5}-?[0-9]{4}$" required>
+                        <input type="text" class="modal-field" placeholder="Cidade do Cliente" id="cidade">
+                    </div>
                 </form>
                 <footer class="modal-footer">
                     <button class="button green" id="salvar">Salvar</button>
